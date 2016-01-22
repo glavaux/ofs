@@ -60,12 +60,19 @@ class BotoOFS(OFSInterface):
             return False
         return (label is None) or (label in bucket)
     
-    def claim_bucket(self, bucket):
+    def claim_bucket(self, bucket=None):
         try:
-            if self.exists(bucket):
-                return False
-            self._bucket_cache[bucket] = self.conn.create_bucket(bucket)
-            return True
+            if bucket:
+              if self.exists(bucket):
+                  return False
+              self._bucket_cache[bucket] = self.conn.create_bucket(bucket)
+              return True
+            else:
+              bucket = uuid4().hex
+              while self.exists(bucket):
+                bucket = uuid4().hex
+              self._bucket_cache[bucket] = self.conn.create_bucket(bucket)
+              return True 
         except boto.exception.S3CreateError, sce:
             return False
     
