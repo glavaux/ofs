@@ -16,6 +16,7 @@ import boto
 import boto.exception
 import boto.connection
 import boto.s3.connection
+from uuid import uuid4
 
 CALLING_FORMATS = {
     'SubdomainCallingFormat': boto.s3.connection.SubdomainCallingFormat(),
