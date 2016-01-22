@@ -11,7 +11,7 @@ except ImportError:
     import simplejson as json
 from datetime import datetime
 from tempfile import mkstemp
-from ofs.base import OFSInterface, OFSException
+from ofs.base import BucketExists, OFSInterface, OFSException
 import boto
 import boto.exception
 import boto.connection
@@ -62,20 +62,18 @@ class BotoOFS(OFSInterface):
         return (label is None) or (label in bucket)
     
     def claim_bucket(self, bucket=None):
-        try:
             if bucket:
               if self.exists(bucket):
-                  return False
+                raise BucketExists
               self._bucket_cache[bucket] = self.conn.create_bucket(bucket)
-              return True
+              return bucket
             else:
               bucket = uuid4().hex
               while self.exists(bucket):
                 bucket = uuid4().hex
               self._bucket_cache[bucket] = self.conn.create_bucket(bucket)
-              return True 
-        except boto.exception.S3CreateError, sce:
-            return False
+              return bucket
+              
     
     def _del_bucket(self, bucket):
         if self.exists(bucket):
