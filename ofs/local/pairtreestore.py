@@ -62,11 +62,17 @@ class PTOFS(OFSInterface):
         self._setup_item(bucket)
         return bucket
         
-    def list_labels(self, bucket):
+    def list_labels(self, bucket, prefix=None):
         if self.exists(bucket):
             _, json_payload = self._get_object(bucket)
-            return json_payload.keys()
-
+            if prefix is None:
+                return json_payload.keys()
+            else:
+                l = len(prefix)
+                if l > 0 and prefix[0]=='/':
+                    prefix = prefix[1:]
+                return filter(lambda k: k[:l] == prefix, json_payload.keys())
+                
     def list_buckets(self):
         return self._store.list_ids()
         

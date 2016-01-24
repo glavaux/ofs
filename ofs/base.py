@@ -38,10 +38,11 @@ class OFSInterface(object):
         '''
         raise NotImplementedError
 
-    def list_labels(self, bucket):
+    def list_labels(self, bucket, prefix=None):
         '''List labels for the given bucket.
 
         :param bucket: bucket to list labels for.
+        :param prefix: an optional prefix for labels (i.e directories)
         :return: iterator for the labels in the specified bucket.
         '''
         raise NotImplementedError

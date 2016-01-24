@@ -83,9 +83,11 @@ class BotoOFS(OFSInterface):
             bucket.delete()
             del self._bucket_cache[bucket.name]
     
-    def list_labels(self, bucket):
+    def list_labels(self, bucket, prefix=None):
         _bucket = self._get_bucket(bucket)
-        for key in _bucket.list():
+        if prefix is None:
+            prefix = ""
+        for key in _bucket.list(prefix=prefix):
             yield key.name
 
     def list_buckets(self):
